@@ -181,9 +181,15 @@ typedef long intptr_t;
 
 #include "pvl.h"
 
+#if (SIZEOF_TIME_T > 4)
+/** Arbitrarily go up to 1000th anniversary of Gregorian calendar, since
+    64-bit time_t values get us up to the tm_year limit of 2+ billion years. */
+#define MAX_TIME_T_YEAR	2582
+#else
 /** This is the last year we will go up to, since 32-bit time_t values
    only go up to the start of 2038. */
 #define MAX_TIME_T_YEAR	2037
+#endif
 
 #define TEMP_MAX 1024
 
@@ -3079,7 +3085,7 @@ struct icaltimetype icalrecur_iterator_next(icalrecur_iterator *impl)
 
 	impl->last = occurrence_as_icaltime(impl, 1);
 	
-	if(impl->last.year >= 2038 ){
+	if(impl->last.year > MAX_TIME_T_YEAR ){
 	    /* HACK */
 	    return icaltime_null_time();
 	}
