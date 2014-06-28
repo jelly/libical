@@ -761,12 +761,8 @@ void test_dirset()
 
 	next = icaldirset_get_next_component(s);
 
-	if (c != 0){
-	    /*icaldirset_remove_component(s,c);*/
-	    printf("%s", icalcomponent_as_ical_string(c));;
-	} else {
-	    printf("Failed to get component\n");
-	}
+	/*icaldirset_remove_component(s,c);*/
+	printf("%s", icalcomponent_as_ical_string(c));;
     }
 
     icalset_free(s);
@@ -1785,7 +1781,7 @@ void test_iterators()
 					     ICAL_VERSION_PROPERTY);
 	const char* s = icalproperty_get_version(p);
 
-	strcat(vevent_list, s);
+	strncat(vevent_list, s, sizeof(vevent_list));
     }
     is("iterate through VEVENTS in a component",
        vevent_list, vevent_list_good);
@@ -1929,7 +1925,7 @@ void test_overlaps()
 
     time_t hh = 1800; /* one half hour */
     
-    icalfileset_options options = {O_RDONLY, 0644, 0};
+    icalfileset_options options = {O_RDONLY, 0644, 0, NULL};
     set = icalset_new(ICAL_FILE_SET, TEST_DATADIR "/overlaps.ics", &options);
 
     c = icalcomponent_vanew(
@@ -1990,7 +1986,7 @@ void test_overlaps()
 void test_fblist()
 {
     icalspanlist *sl, *new_sl;
-    icalfileset_options options = {O_RDONLY, 0644, 0};
+    icalfileset_options options = {O_RDONLY, 0644, 0, NULL};
     icalset *set = icalset_new(ICAL_FILE_SET, TEST_DATADIR "/spanlist.ics", &options);
     struct icalperiodtype period;
     icalcomponent *comp;

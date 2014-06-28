@@ -62,7 +62,7 @@
 #endif
 
 /** Default options used when NULL is passed to icalset_new() **/
-icalfileset_options icalfileset_options_default = {O_RDWR|O_CREAT, 0644, 0};
+icalfileset_options icalfileset_options_default = {O_RDWR|O_CREAT, 0644, 0, NULL};
 
 int icalfileset_lock(icalfileset *set);
 int icalfileset_unlock(icalfileset *set);
@@ -418,13 +418,13 @@ icalerrorenum icalfileset_commit(icalset* set)
     for(c = icalcomponent_get_first_component(fset->cluster,ICAL_ANY_COMPONENT);
 	c != 0;
 	c = icalcomponent_get_next_component(fset->cluster,ICAL_ANY_COMPONENT)){
-	int sz;
+	ssize_t sz;
 
 	str = icalcomponent_as_ical_string_r(c);
     
 	sz=write(fset->fd,str,strlen(str));
 
-	if ( sz != strlen(str)){
+	if ( sz != (ssize_t)strlen(str)){
 	    perror("write");
 	    icalerror_set_errno(ICAL_FILE_ERROR);
 	    free(str);
@@ -903,13 +903,14 @@ icalcomponent* icalfileset_form_a_matched_recurrence_component(icalsetiter* itr)
     /* add recurrence-id to the component
      * if there is a recurrence-id already, remove it, then add the new one */
     prop = icalcomponent_get_first_property(comp, ICAL_RECURRENCEID_PROPERTY);
-    if (prop)
+    if (prop) {
         icalcomponent_remove_property(comp, prop);
-        icalcomponent_add_property(comp, icalproperty_new_recurrenceid(next));
+    }
+    icalcomponent_add_property(comp, icalproperty_new_recurrenceid(next));
 
      if (itr->gauge == 0 || icalgauge_compare(itr->gauge, comp) == 1) {
-         /* matches and returns */
-         return comp;
+        /* matches and returns */
+        return comp;
      }
      /* not matched */
      return NULL;
