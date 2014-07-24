@@ -13,6 +13,6 @@ else
   echo "yes" | sudo add-apt-repository ppa:kalakris/cmake
   sudo apt-get update -qq
   sudo apt-get install cmake
-  sudo apt-get install libicu48
-  sudo apt-get install libicu-dev
+  #comment out for now as it causes an Exception: SegFault in the regression test
+  #sudo apt-get install libicu-dev
 fi
