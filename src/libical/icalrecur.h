@@ -124,12 +124,9 @@ enum {
  * Recurrence type routines
  */
 
-int icalrecurrencetype_rscale_is_supported(void);
-icalarray* icalrecurrencetype_rscale_supported_calendars(void);
-
 /* See RFC 5545 Section 3.3.10, RECUR Value, and draft-daboo-icalendar-rscale
  * for an explanation of the values and fields in struct icalrecurrencetype.
-
+ *
  * The maximums below are based on Chinese/Hebrew leap years (13 months)
  */
 #define ICAL_BY_SECOND_SIZE 61
@@ -147,9 +144,6 @@ struct icalrecurrencetype
 {
 	icalrecurrencetype_frequency freq;
 
-
-	char *rscale;
-	icalrecurrencetype_skip skip;
 
 	/* until and count are mutually exclusive. */
        	struct icaltimetype until; 
@@ -177,8 +171,15 @@ struct icalrecurrencetype
 	short by_week_no[ICAL_BY_WEEKNO_SIZE];
 	short by_month[ICAL_BY_MONTH_SIZE];
 	short by_set_pos[ICAL_BY_SETPOS_SIZE];
+
+	/* For RSCALE extension (draft-daboo-icalendar-rscale) */
+	char *rscale;
+	icalrecurrencetype_skip skip;
 };
 
+
+int icalrecurrencetype_rscale_is_supported(void);
+icalarray* icalrecurrencetype_rscale_supported_calendars(void);
 
 void icalrecurrencetype_clear(struct icalrecurrencetype *r);
 
